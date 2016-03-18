@@ -1,5 +1,6 @@
 == Binaries
 This directory must have the following binaries:
+
 * jboss-dv-installer-6.2.0.redhat-3.jar
 * jboss-eap-6.4.0.zip
 
@@ -7,5 +8,6 @@ This directory must have the following binaries:
 If you have any patch put it on patches directory.
 
 Tip:
+
 * BZ-1289142.zip
 * jboss-eap-6.4.3-patch.zip
