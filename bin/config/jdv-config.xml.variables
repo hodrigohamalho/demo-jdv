@@ -1,0 +1,5 @@
+Dashboard.admin.password=redhat@123
+Modeshape.password=redhat@123
+vault.keystorepwd=redhat@123
+Teiid.user.password=redhat@123
+adminPassword=redhat@123
