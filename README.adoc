@@ -1,2 +1,12 @@
-== SETUP
+== Pre Req
 
+* Docker
+* Docker Compose
+* Binaries
+  - jboss-dv-installer-6.2.0.redhat-3.jar
+  - jboss-eap-6.4.0.zip
+* Patches (Optional)
+  - BZ-1289142.zip
+  - jboss-eap-6.4.3-patch.zip
+
+== SETUP
