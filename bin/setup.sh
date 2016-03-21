@@ -27,6 +27,8 @@ function install(){
   java -jar jboss-dv-installer-6.2.0.redhat-3.jar config/jdv-config.xml &&
   echo "Applying patch"
   _applyPatch "BZ-1289142.zip" 20
+
+  docker-compose -f ../docker-compose.yml up
 }
 
 function uninstall(){
