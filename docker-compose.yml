@@ -1,13 +1,17 @@
 version: '2'
 services:
   mariadb:
-    image: mariadb:10.1
+    build: mariadb/.
+    container_name: mariadb
     ports:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: root
+    volumes:
+      - ./mariadb/volume:/etc/mysql/conf.d
   postgres:
+    container_name: postgres
     image: postgres:9.5
     ports:
       - "5432:5432"
