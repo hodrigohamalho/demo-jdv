@@ -2,38 +2,61 @@
 # Setup Jboss Data Virtualization environment from scratch
 # @author Rodrigo Ramalho - rramalho@redhat.com
 #                           github.com/hodrigohamalho
+# This script shouldn't be updated
+# all settings is on setup.env.sh file
+
+. setup.env.sh
 
 function _applyPatch(){
   echo "Applying patch..."
-  PATCH_NAME=$1
+  PATCH=$1
   SECONDS_TO_WAIT=$2
 
-  sh jboss-eap-6.4/bin/standalone.sh &
+  sh $EAP_DIR/bin/standalone.sh &
   sleep 1
   JBOSS_PID=$(pgrep -f Standalone)
   echo "JBOSS PID $JBOSS_PID"
   sleep $SECONDS_TO_WAIT
-  sh jboss-eap-6.4/bin/jboss-cli.sh -c "patch apply patches/$PATCH_NAME"
+  sh $EAP_DIR/bin/jboss-cli.sh -c "patch apply $PATCH"
   kill $JBOSS_PID
+}
+
+function _startDockerMachine(){
+  DOCKER_MACHINE_STATUS=$(docker-machine status default)
+  if [ "$DOCKER_MACHINE_STATUS" != "Running" ]; then
+    echo "starting docker-machine..."
+    docker-machine start default 2>&1 | grep "Started machines" && eval $(docker-machine env default)
+  fi
 }
 
 function install(){
   echo "installing..."
-  unzip jboss-eap-6.4.0.zip &&
+
+  if [ -d "$EAP_DIR" ]; then
+    uninstall
+  fi
+
+  unzip $EAP_BIN -d . &&
   # is there another jboss running ?
-  _applyPatch "jboss-eap-6.4.3-patch.zip" 5
+  _applyPatch "$EAP_BIN_NAME" $EAP_START_WAIT
 
   echo "Jboss Data Virtualization"
-  java -jar jboss-dv-installer-6.2.0.redhat-3.jar config/jdv-config.xml &&
+  java -jar $JDV_BIN $JDV_CONFIG &&
   echo "Applying patch"
-  _applyPatch "BZ-1289142.zip" 20
+  _applyPatch "$JDV_PATCH" $JDV_START_WAIT
+
+  if [ $(uname) == 'Darwin' ]; then
+    _startDockerMachine
+  else
+    # TODO start docker for Linux
+  fi
 
   docker-compose -f ../docker-compose.yml up
 }
 
 function uninstall(){
   echo "uninstalling...."
-  rm -rf jboss-eap-6.4
+  rm -rf $EAP_DIR
 }
 
 function reset(){
